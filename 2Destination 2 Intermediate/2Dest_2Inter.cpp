@@ -27,6 +27,7 @@ float ETX_2dest2intermediate(float a, float b, float c, float d, float e, float 
     float ETX_2_to_34 = ETX_2dest1src(e, f);  // 2 → {3,4}
 
 
+
     // Each destination can be reached by either node, success probability:
     float q13 = 1.0 / c; // node 1 → 3
     float q23 = 1.0 / e; // node 2 → 3
@@ -48,10 +49,14 @@ float ETX_2dest2intermediate(float a, float b, float c, float d, float e, float 
         (1 - q1 - q2 + q1*q2)
       + q1*(1 - q2)*(1 + ETX_1_to_34)
       + (1 - q1)*q2*(1 + ETX_2_to_34)
-      + q1*q2*(1 + ETX_12_to_34);
+      + q1*q2*(1 + min({ETX_1_to_34, ETX_2_to_34, c+f, d+e}));
 
 
     float denominator = q1 + q2 - q1*q2;
+
+
+    cout << ETX_1_to_34 << " " << ETX_2_to_34 << endl;
+    cout << ETX_12_to_34 << " " << min({ETX_1_to_34, ETX_2_to_34, c+f, d+e})<< endl;
 
     return numerator / denominator;
 }
