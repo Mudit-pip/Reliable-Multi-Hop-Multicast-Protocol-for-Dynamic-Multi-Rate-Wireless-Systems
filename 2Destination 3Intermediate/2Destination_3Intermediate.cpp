@@ -24,7 +24,7 @@ float ETX_2dest1src(float e,float f, float el, float fl) {
 // ETX from 0 → {1,3} → {4,5} with 2 intermediate nodes
 //used to calculate x2 in ETX_1_to_45_3intermediate
 float ETX_2dest13(float a, float d, float c, float g, 
-	float al, float dl, float cl, float gl) {
+    float al, float dl, float cl, float gl) {
 
     float q1 = 1.0/a;
     float q3 = 1.0/c;
@@ -276,58 +276,58 @@ void ETX_1_to_45_3intermediate(
     float d, float dl, float e, float el, float f, float fl,  
     float g, float gl) {
 
-	vector<vector<float>> cost(3, vector<float>(5, 0));
+    vector<vector<float>> cost(3, vector<float>(5, 0));
 
 ///////////////////////////////////////////////////
-	cost[0][0] = b/bl + f/fl;
-	cost[1][0] = b/bl + e/el;
+    cost[0][0] = b/bl + f/fl;
+    cost[1][0] = b/bl + e/el;
 
-	float x1 = ETX_2dest1src(e,f,el,fl);
-	cost[2][0] = b/bl + x1;
+    float x1 = ETX_2dest1src(e,f,el,fl);
+    cost[2][0] = b/bl + x1;
 //////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////
-	cost[0][1] = c/cl + g/gl;
-	cost[1][1] = a/al + d/dl;
+    cost[0][1] = c/cl + g/gl;
+    cost[1][1] = a/al + d/dl;
 
-	float x2 = ETX_2dest13(a, d, c, g, al, dl, cl, gl);
-	cost[2][1] = x2;
+    float x2 = ETX_2dest13(a, d, c, g, al, dl, cl, gl);
+    cost[2][1] = x2;
 //////////////////////////////////////////////
 
 
 ///////////////////////////////////////////////////
-	cost[0][2] = b/bl + f/fl;
+    cost[0][2] = b/bl + f/fl;
 
 
-	float x3 = ETX_1dest12(a, b, d, dl, e, el);
-	cost[1][2] = x3;
+    float x3 = ETX_1dest12(a, b, d, dl, e, el);
+    cost[1][2] = x3;
 
-	float x4 = ETX_2dest12(a, al, b, bl, d, dl, e, el, f, fl);
-	cost[2][2] = x4;
+    float x4 = ETX_2dest12(a, al, b, bl, d, dl, e, el, f, fl);
+    cost[2][2] = x4;
 //////////////////////////////////////////////
 
 ///////////////////////////////////////////////////
-	float x5 = ETX_1dest23( b,  c,  f,  fl,  g,  gl);
-	cost[0][3] = x5;
+    float x5 = ETX_1dest23( b,  c,  f,  fl,  g,  gl);
+    cost[0][3] = x5;
 
 
-	cost[1][3] = b/bl + e/el;
+    cost[1][3] = b/bl + e/el;
 
-	float x6 = ETX_2dest23(b, bl, c, cl, e, el, f, fl, g,  gl);
-	cost[2][3] = x6;
+    float x6 = ETX_2dest23(b, bl, c, cl, e, el, f, fl, g,  gl);
+    cost[2][3] = x6;
 //////////////////////////////////////////////
 
 ///////////////////////////////////////////////////
-	float x7 = ETX_1dest123_to5(a, b, c, f, fl, g, gl);
-	cost[0][4] = x7;
+    float x7 = ETX_1dest123_to5(a, b, c, f, fl, g, gl);
+    cost[0][4] = x7;
 
-	float x8 = ETX_1dest123_no3(a, b, c, d, dl, e, el);
-	cost[1][4] = x8;
+    float x8 = ETX_1dest123_no3(a, b, c, d, dl, e, el);
+    cost[1][4] = x8;
 
-	float x9 = ETX_1dest123_to45(a, al, b, bl, c, cl, d, dl,
-		e, el, f, fl, g, gl, x1, x3, x5);
-	cost[2][4] = x9;
+    float x9 = ETX_1dest123_to45(a, al, b, bl, c, cl, d, dl,
+        e, el, f, fl, g, gl, x1, x3, x5);
+    cost[2][4] = x9;
 //////////////////////////////////////////////
 
 
@@ -337,16 +337,16 @@ void ETX_1_to_45_3intermediate(
    float mini = cost[2][0];
 
    for(int i=1; i<5; i++){
-   	if(cost[2][i] < mini){
-   		mini = cost[2][i];
-   		ans_set = fs[i];
-   	}
+    if(cost[2][i] < mini){
+        mini = cost[2][i];
+        ans_set = fs[i];
+    }
    }
 
    cout << "Minimum ETT from Node 0 to {4,5} is " << mini << endl;
    cout << "Path = ";
    for(auto it : ans_set){
-   	cout << it << " ";
+    cout << it << " ";
    }
 }
 
