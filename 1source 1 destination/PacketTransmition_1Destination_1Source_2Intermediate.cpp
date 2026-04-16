@@ -56,61 +56,67 @@ float getRandom() {
     return r;
 }
 
-void ETX_ETT_1src_1dest_2int(float a,float b, float c, float d, float al, float bl, float cl, float dl) {
-    float q1 = 1.0/a;
-    float q2 = 1.0/b;
-    
 
-    float numerator =
-        (1 - q1)*(1 - q2)
-      + (1 - q1)*q2*(1 + d)
-      + q1*(1 - q2)*(1 + c)
-      + q1*q2*(1+min(c,d));
-
-    float denominator = 1 - (1 - q1)*(1 - q2);
-    cout <<  "ETX = " << numerator / denominator << endl;
-
-
-    float temp = 1/min(al,bl);
-    float numerator1 =
-        (1 - q1)*(1 - q2)*temp
-      + (1 - q1)*q2*(temp + d/dl)
-      + q1*(1 - q2)*(temp + c/cl)
-      + q1*q2*(temp+min(c/cl,d/dl));
-
-    float denominator1 = 1 - (1 - q1)*(1 - q2);
-    cout <<  "ETT = " << numerator1 / denominator1 << endl;
-}
-
-void sim_ett(float a, float b, float c, float d, float al, float bl, float cl, float dl, bool gotA, bool gotB){
-
+void sim_etx(float a, float b, float c, float d, bool gotA, bool gotB){
     if (gotA || gotB) {
-        float etx_fwd, lat_fwd;
+        float etx_fwd;
         if (gotA && gotB) {
-            if (c/cl <= d/dl) { etx_fwd = c; lat_fwd = cl; }
-            else               { etx_fwd = d; lat_fwd = dl; }
+            if (c <= d) { etx_fwd = c; }
+            else         { etx_fwd = d; }
         } else if (gotA) {
-            etx_fwd = c; lat_fwd = cl;
+            etx_fwd = c;
         } else {
-            etx_fwd = d; lat_fwd = dl;
+            etx_fwd = d;
         }
-
         while (true) {
-            counter += 1.0f / lat_fwd;
+            counter += 1;
             float r = getRandom();
             if (r <= 1.0f / etx_fwd) return;
         }
     }
-
-    counter += 1.0f / min(al, bl);
-
+    counter += 1;
     float q1 = 1.0f / a;
     float q2 = 1.0f / b;
-
     float p_none  = (1-q1)*(1-q2);
     float p_Aonly = q1*(1-q2);
     float p_Bonly = (1-q1)*q2;
+    float r = getRandom();
+    if (r < p_none) {
+        sim_etx(a, b, c, d, false, false);
+    } else if (r < p_none + p_Aonly) {
+        sim_etx(a, b, c, d, true,  false);
+    } else if (r < p_none + p_Aonly + p_Bonly) {
+        sim_etx(a, b, c, d, false, true);
+    } else {
+        sim_etx(a, b, c, d, true,  true);
+    }
+}
 
+
+
+void sim_ett(float a, float b, float c, float d, float al, float bl, float cl, float dl, bool gotA, bool gotB){
+    if (gotA || gotB) {
+        float etx_fwd, linkrate_fwd;
+        if (gotA && gotB) {
+            if (c/cl <= d/dl) { etx_fwd = c; linkrate_fwd = cl; }
+            else               { etx_fwd = d; linkrate_fwd = dl; }
+        } else if (gotA) {
+            etx_fwd = c; linkrate_fwd = cl;
+        } else {
+            etx_fwd = d; linkrate_fwd = dl;
+        }
+        while (true) {
+            counter += 1.0f / linkrate_fwd;
+            float r = getRandom();
+            if (r <= 1.0f / etx_fwd) return;
+        }
+    }
+    counter += 1.0f / min(al, bl);
+    float q1 = 1.0f / a;
+    float q2 = 1.0f / b;
+    float p_none  = (1-q1)*(1-q2);
+    float p_Aonly = q1*(1-q2);
+    float p_Bonly = (1-q1)*q2;
     float r = getRandom();
     if (r < p_none) {
         sim_ett(a, b, c, d, al, bl, cl, dl, false, false);
@@ -130,13 +136,14 @@ int main() {
     int N = 300000;
 
     counter = 0;
-    for (int i = 0; i < N; i++) {
-        sim_ett(a, b, c, d, al, bl, cl, dl, false, false);
-    }
+    for (int i = 0; i < N; i++)
+        sim_etx(a, b, c, d, false, false);
+    cout << "Simulated ETX = " << counter/N << endl;
 
-    cout << "Simulated ETT = " << counter / N << endl;
-    cout << "\n\n\nCalculated Values:-" << endl;
-    ETX_ETT_1src_1dest_2int(a,b,c,d, al, bl, cl, dl);
+    counter = 0;
+    for (int i = 0; i < N; i++)
+        sim_ett(a, b, c, d, al, bl, cl, dl, false, false);
+    cout << "Simulated ETT = " << counter/N << endl;
 
     return 0;
 }
