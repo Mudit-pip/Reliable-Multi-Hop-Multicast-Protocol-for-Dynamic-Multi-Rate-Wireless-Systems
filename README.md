@@ -1,4 +1,3 @@
-````markdown
 # Reliable Multi-Hop Multicast Routing for Dynamic Multi-Rate Wireless Systems
 
 A multicast routing approach for wireless multi-hop networks that considers link reliability, varying transmission rates, and forwarding-node selection.
